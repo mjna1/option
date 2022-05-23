@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-
+<button onclick="getDatas()">Resfresh Data</button>
 <div id="example-table"></div>
 
 <script>
@@ -80,7 +80,7 @@
         }
         table.setSort("coef", "desc");
 
-        setTimeout(getDatas, 10000);
+        {#setTimeout(getDatas, 10000);#}
     }
 
     getDatas();
