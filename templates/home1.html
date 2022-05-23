@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://unpkg.com/tabulator-tables@4.1.4/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.1.4/dist/js/tabulator.min.js"></script>
+    <style>
+        .grid {
+            width: 500px;
+            height: 450px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="example-table"></div>
+
+<script>
+    //define some sample data
+
+
+    async function getDatas() {
+
+        try {
+            console.log('getData');
+            let res = await fetch('/api');
+            {#console.log(res);#}
+            let data = await res.json();
+            console.log('finish');
+            {#console.log(data);#}
+            console.log("///////////////////////////////////////////////////////////////////////////////");
+            {#console.log(Object.values(data)[0].name)#}
+
+            var tabledata = [];
+
+            for (i = 0; i < Object.keys(data).length; i++) {
+                tabledata.push(Object.values(data)[i]);
+            }
+            console.log('finish2');
+
+
+            //create Tabulator on DOM element with id "example-table"
+            var table = new Tabulator("#example-table", {
+                maxHeight: "100%", // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+                data: tabledata, //assign data to table
+                layout: "fitColumns", //fit columns to width of table (optional)
+
+                columns: [ //Define Table Columns
+                    {title: "id", field: "id", width: 50},
+                    {title: "Name", field: "name", width: 150, sorter: "string", align: "center"},
+                    {
+                        title: "power", field: "power", align: "center", formatter: function (cell, formatterParams) {
+                            var value = cell.getValue();
+                            if (value > 0) {
+                                return "<span style='color:#3FB449; font-weight:bold;'>" + value + "</span>";
+                            } else {
+                                return "<span style='color:#FF0000; font-weight:bold;'>" + value + "</span>";
+                            }
+                        }
+                    },
+                    {title: "coef", field: "coef", align: "center"},
+                    {title: "time", field: "time", align: "center", width: 150},
+                ],
+                rowClick: function (e, row) { //trigger an alert message when the row is clicked
+                    console.log(row.getData().name);
+                },
+            });
+
+            {#var size = Object.keys(data).length;#}
+            {#console.log(size); // Prints: 4#}
+            {#myChart.data.labels = data.map(item => item.created_at);#}
+            {#myChart.data.datasets[0].data = data.map(item => item.price);#}
+            {#myChart.update();#}
+
+        } catch
+            (e) {
+            console.log(e);
+            {#interval = interval * 2;#}
+        }
+        table.setSort("coef", "desc");
+
+        setTimeout(getDatas, 10000);
+    }
+
+    getDatas();
+
+
+</script>
+</body>
+</html>

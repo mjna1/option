@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/plugins/css/pluginsCss.css'/>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/plugins/plugins.css'/>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/css/luckysheet.css'/>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/assets/iconfont/iconfont.css'/>
+    <script src="https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/plugins/js/plugin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luckysheet@latest/dist/luckysheet.umd.js"></script>
+
+
+    <div id="luckysheet"
+         style="margin:0px;padding:0px;position:absolute;width:100%;height:100%;left: 0px;top: 0px;"></div>
+
+
+</head>
+<body>
+
+
+<script>
+    $(function () {
+            //Configuration item
+            var options = {
+                container: 'luckysheet', //luckysheet is the container id
+                {#loadUrl: 'http://127.0.0.1:8000/api2', //data url#}
+                {#loadSheetUrl: "",#}
+                data: [
+                    {
+                        "name": "Sheet1", //Worksheet name
+                        "color": "", //Worksheet color
+                        "index": 0, //Worksheet index
+                        "status": 1, //Worksheet active status
+                        "order": 0, //The order of the worksheet
+                        "hide": 0,//Whether worksheet hide
+                        "row": 800, //the number of rows in a sheet
+                        "column": 800, //the number of columns in a sheet
+                        "defaultRowHeight": 19, //Customized default row height
+                        "defaultColWidth": 73, //Customized default column width
+                        "celldata": [], //Initial the cell data
+                        "config": {
+                            "merge": {}, //merged cells
+                            "rowlen": {}, //Table row height
+                            "columnlen": {}, //Table column width
+                            "rowhidden": {}, //hidden rows
+                            "colhidden": {}, //hidden columns
+                            "borderInfo": {}, //borders
+                            "authority": {}, //Worksheet protection
+                        },
+                        "scrollLeft": 0, //Left and right scroll bar position
+                        "scrollTop": 315, //Up and down scroll bar position
+                        "luckysheet_select_save": [], //selected area
+                        "calcChain": [],//Formula chain
+                        "isPivotTable": false,//Whether is pivot table
+                        "pivotTable": {},//Pivot table settings
+                        "filter_select": {},//Filter range
+                        "filter": null,//Filter configuration
+                        "luckysheet_alternateformat_save": [], //Alternate colors
+                        "luckysheet_alternateformat_save_modelCustom": [], //Customize alternate colors
+                        "luckysheet_conditionformat_save": {},//condition format
+                        "frozen": {}, //freeze row and column configuration
+                        "chart": [], //Chart configuration
+                        "zoomRatio": 1, // zoom ratio
+                        "image": [], //image
+                        "showGridLines": 1, //Whether to show grid lines
+                    },
+
+                ],
+            }
+            console.log("data", options.data[0].celldata);
+            luckysheet.create(options)
+            console.log("asdasd", luckysheet.getluckysheetfile())
+            console.log("getCellValue", luckysheet.getCellValue(0, 0));
+            {#luckysheet.setCellValue(1, 3, 44);#}
+            {#luckysheet.setCellFormat(0, 2, "bd", {borderType: "border-right", style: "1", color: "#ff0000"})#}
+            luckysheet.setCellFormat(1, 0, 'v', 'abc');
+            luckysheet.setCellFormat(1, 1, 'v', 'qqq');
+            luckysheet.setCellFormat(100, 0, 'v', 'qqwq');
+
+
+            console.log("getCellFormat", luckysheet.getRangeValue({row: [10, 11], column: [10, 11]}));
+
+        }
+    )
+
+    console.log("sldvnsdsvnsdvnsjldvnjlsnvjlsnvjnvkjrnwv")
+
+    var interval = 3000;
+
+    async function getData() {
+        console.log(interval);
+        try {
+            console.log('getData');
+            let res = await fetch('/api');
+            console.log(res);
+            let data = await res.json();
+            console.log('finish');
+            console.log(data);
+            console.log("///////////////////////////////////////////////////////////////////////////////");
+            console.log(Object.values(data)[0].name)
+            let str1 = Object.values(data)[0]
+
+            for (i = 0; i < Object.keys(data).length; i++) {
+                {#luckysheet.setCellFormat(i, 0, 'v', Object.values(data)[i].name);#}
+                console.log(Object.values(data)[i].name)
+            }
+            console.log('finish2');
+
+            {#var size = Object.keys(data).length;#}
+            {#console.log(size); // Prints: 4#}
+            {#myChart.data.labels = data.map(item => item.created_at);#}
+            {#myChart.data.datasets[0].data = data.map(item => item.price);#}
+            {#myChart.update();#}
+            return str1;
+        } catch
+            (e) {
+            console.log(e);
+            interval = interval * 2;
+        }
+
+        {#setTimeout(getData, interval);#}
+    }
+
+    var dara = getData();
+
+    {#console.log("222222222222222")#}
+
+</script>
+
+</body>
+</html>
