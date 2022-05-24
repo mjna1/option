@@ -14,6 +14,7 @@
 </head>
 <body>
 <button onclick="getDatas()">Resfresh Data</button>
+<a id="sortid">Position:</a>
 <div id="example-table"></div>
 
 <script>
@@ -64,7 +65,12 @@
                     {title: "time", field: "time", align: "center", width: 150},
                 ],
                 rowClick: function (e, row) { //trigger an alert message when the row is clicked
-                    console.log(row.getData());
+                    {#console.log(e, row.getData());#}
+                    {#console.log(row.getElement());#}
+                    console.log(row.getIndex());
+                    document.getElementById("sortid").innerHTML = "Position: " + (row.getPosition(true) + 1);
+                    ;
+
                 },
             });
 
