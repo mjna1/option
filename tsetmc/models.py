@@ -8,4 +8,4 @@ class Stock(models.Model):
     data = models.TextField()
 
     def __str__(self):
-        return str(self.created)
+        return str(self.created) + ' ' + str(self.name)
