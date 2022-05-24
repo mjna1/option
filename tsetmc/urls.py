@@ -3,8 +3,8 @@ from .views import home, api, api2, home1
 
 urlpatterns = [
     path("w", home, name='home'),
-    path("api", api, name='home'),
-    path("api2", api2, name='home'),
-    path("", home1, name='home'),
+    path("api", api, name='api'),
+    path("api2", api2, name='api2'),
+    path("", home1, name='home1'),
 
 ]

@@ -14,32 +14,129 @@
 </head>
 <body>
 <button onclick="getDatas()">Resfresh Data</button>
-<a id="sortid">Position:</a>
+<a id="sortid">Last Click =</a>
 <div id="example-table"></div>
 
 <script>
     //define some sample data
-
+    var a = performance.now();
 
     async function getDatas() {
 
         try {
             console.log('getData');
-            let res = await fetch('/api');
-            {#console.log(res);#}
-            let data = await res.json();
-            console.log('finish');
-            {#console.log(data);#}
-            console.log("///////////////////////////////////////////////////////////////////////////////");
-            {#console.log(Object.values(data)[0].name)#}
+            try {
+                let res = await fetch('/api');
+                {#console.log(res);#}
+                let data = await res.json();
+                console.log('finish');
+                {#console.log(data);#}
 
-            var tabledata = [];
+                console.log("//////////////////////////////////////////");
+                {#console.log(Object.values(data)[0].name)#}
 
-            for (i = 0; i < Object.keys(data).length; i++) {
-                tabledata.push(Object.values(data)[i]);
+                var tabledata = [];
+                for (i = 0; i < Object.keys(data).length; i++) {
+                    tabledata.push(Object.values(data)[i]);
+                }
+
+                {#ذخیره داده در لوکال استوریج با تاریخ روز#}
+                var timedate = new Date().toLocaleString().replace(",", "").replace(/:.. /, " ");
+                {##}
+                {#                var today = new Date();#}
+                {#                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();#}
+                {#                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();#}
+                {#                var dateTime = date + ' ' + time;#}
+                try {
+                    {#localStorage.setItem(timedate, JSON.stringify(tabledata));#}
+                    console.log('localStorage not');
+                } catch (e) {
+                    console.log(e, "local error");
+                    var keys = Object.keys(localStorage).sort();
+                    var len = keys.length;
+                    console.log(len, keys[0]);
+                    for (var i = 0; i < 10; i++) {
+                        localStorage.removeItem(keys[i]);
+                    }
+                    var keys = Object.keys(localStorage).sort();
+                    var len = keys.length;
+                    console.log(len, keys[0]);
+                }
+                {#حذف لوکال استوریج های دیروز#}
+                {#                var arr;#}
+                {#                for (let i = 0; i < localStorage.length; i++) {#}
+                {#                    var yesterday = new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24).toLocaleString().replace(",", "").replace(/:.. /, " ").substring(0, timedate.indexOf(" "));#}
+                {#                    if (localStorage.key(i).indexOf(yesterday) > -1) {#}
+                {#                        arr.push(localStorage.key(i));#}
+                {#                    }#}
+                {#                }#}
+
+
+            } catch (e) {
+                console.log(e);
             }
-            console.log('finish2');
 
+
+            {#var timedate = new Date().toLocaleString().replace(",", "").replace(/:.. /, " ")#}
+            {#console.log(timedate);#}
+
+            {#function allStorage() {#}
+            {#    var timedate = new Date().toLocaleString().replace(",", "").replace(/:.. /, " ");#}
+            {#    localStorage.setItem(timedate, JSON.stringify(tabledata));#}
+            {#    // Retrieve the object from storage#}
+            {#    var retrievedObject = localStorage.getItem(timedate);#}
+            {#    console.log("timeArray", timedate);#}
+            {#    console.log('retrievedObject1: ', JSON.parse(retrievedObject));#}
+            {##}
+            {#    var values = [];#}
+            {#    keys = Object.keys(localStorage);#}
+            {#    i = keys.length;#}
+            {#    console.log(i, keys.sort());#}
+            {#    var objj = [];#}
+            {##}
+            {#    while (i--) {#}
+            {#        values.push(localStorage.getItem(keys[i]));#}
+            {#        objj[keys[i]] = localStorage.getItem(keys[i]);#}
+            {#    }#}
+
+
+            {#allStorage();#}
+
+            {#var keys = Object.keys(localStorage).sort();#}
+            {#var len = keys.length;#}
+            {#console.log(len)#}
+            {#console.log(localStorage.getItem(keys[len - 1]));#}
+            {#console.log(localStorage.getItem(keys[i - 2]));#}
+
+            {#var tabl = localStorage.getItem(keys[len - 1]);#}
+            {#var tablold = localStorage.getItem(keys[len - 2]);#}
+
+            {#tabl = JSON.parse(tabl);#}
+            {#console.log("tabl1", localStorage.getItem(keys[len - 1]));#}
+            {#console.log("tabl2", localStorage.getItem(keys[len - 3]));#}
+            {#console.log("456", Object.values(tabl)[1]);#}
+
+            {#for (j = 0; j < Object.keys(tabl).length; j++) {#}
+            {#Object.values(tabl)[i]#}
+            {#tabledata2.push(Object.values(tabl)[i]);#}
+            {##}
+            {#console.log("1", typeof (Object.values(JSON.parse(localStorage.getItem(keys[len - 1])))[j].volume));#}
+            {##}
+            {#    try {#}
+            {#        var nesbat = (Object.values(JSON.parse(localStorage.getItem(keys[len - 1])))[j].volume) / (Object.values(JSON.parse(localStorage.getItem(keys[len - 2])))[j].volume);#}
+            {#        var o1 = {"nesbat": nesbat};#}
+            {#        Object.assign(Object.values(tabl)[j], o1);#}
+            {#    } catch#}
+            {#        (e) {#}
+            {#console.log(j, e);#}
+            {#        var o1 = {"nesbat": "null"};#}
+            {#        Object.assign(Object.values(tabl)[j], o1);#}
+            {#    }#}
+            {#console.log(Object.values(JSON.parse(localStorage.getItem(keys[len - 3])))[j]);#}
+            {#console.log(Object.values(JSON.parse(localStorage.getItem(keys[len - 2])))[j]);#}
+            //}
+            {#console.log(tabl);#}
+            {#var tabledata2 = tabl;#}
 
             //create Tabulator on DOM element with id "example-table"
             var table = new Tabulator("#example-table", {
@@ -48,10 +145,14 @@
                 layout: "fitColumns", //fit columns to width of table (optional)
 
                 columns: [ //Define Table Columns
+                    {formatter: "rownum", hozAlign: "center", width: 40},
                     {title: "id", field: "id", width: 50},
                     {title: "Name", field: "name", width: 150, sorter: "string", align: "center"},
                     {
-                        title: "power", field: "power", align: "center", formatter: function (cell, formatterParams) {
+                        title: "power",
+                        field: "powerlast",
+                        align: "center",
+                        formatter: function (cell, formatterParams) {
                             var value = cell.getValue();
                             if (value > 0) {
                                 return "<span style='color:#3FB449; font-weight:bold;'>" + value + "</span>";
@@ -60,15 +161,17 @@
                             }
                         }
                     },
-                    {title: "coef", field: "coef", align: "center"},
-                    {title: "volume", field: "volume", align: "center"},
-                    {title: "time", field: "time", align: "center", width: 150},
+                    {title: "coef", field: "coeflast", align: "center"},
+                    {title: "volume", field: "volumelast", align: "center"},
+                    {#{title: "vol/vol-1", field: "nesbat", align: "center"},#}
+                    {title: "time", field: "timelast", align: "center", width: 150},
                 ],
                 rowClick: function (e, row) { //trigger an alert message when the row is clicked
                     {#console.log(e, row.getData());#}
                     {#console.log(row.getElement());#}
                     console.log(row.getIndex());
-                    document.getElementById("sortid").innerHTML = "Position: " + (row.getPosition(true) + 1);
+                    document.getElementById("sortid").innerHTML = "Last Click =  Position: " + (row.getPosition(true) + 1) + "   Namad:    " + row.getData().name + "  Coef:  " + row.getData().coeflast + "  Power:  " + row.getData().powerlast + "  Volume:  " + row.getData().volumelast + "  Time:  " + row.getData().timelast;
+                    {#alert("Row " + row.getData().id + " Clicked!!!!");#}
                     ;
 
                 },
@@ -85,7 +188,11 @@
             console.log(e);
             {#interval = interval * 2;#}
         }
-        table.setSort("power", "desc");
+        table.setSort("coeflast", "desc");
+
+
+        var b = performance.now();
+        console.log('It took  ' + (b - a) + '  ms.');
 
         setTimeout(getDatas, 15000);
     }

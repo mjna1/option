@@ -1,4 +1,6 @@
+import json
 import numbers
+import time
 import traceback
 
 from django.shortcuts import render
@@ -6,8 +8,13 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import math
 
-
 # Create your views here.
+from tsetmc.models import Stock
+from django.utils.timezone import now
+from django.utils import timezone
+import datetime
+
+
 @csrf_exempt
 def api(request):
     # محاسبه نسبت
@@ -16,15 +23,15 @@ def api(request):
     import pandas as pd
     import finpy_tse as tse
     # import jdatetime
-    import openpyxl
+    # import openpyxl
     import string
     import os
     # import xlwt
     import shutil
 
-    def n2a(n, b=string.ascii_uppercase):
-        d, m = divmod(n, len(b))
-        return n2a(d - 1, b) + b[m] if d else b[m]
+    # def n2a(n, b=string.ascii_uppercase):
+    #     d, m = divmod(n, len(b))
+    #     return n2a(d - 1, b) + b[m] if d else b[m]
 
     def isfloat(num):
         try:
@@ -32,6 +39,14 @@ def api(request):
             return True
         except ValueError:
             return False
+
+    def get_client_ip(request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
 
     # writepath = r'coef.xlsx'
     # if not os.path.exists(writepath):
@@ -41,12 +56,12 @@ def api(request):
     #     shutil.copyfile(original, target2)
     #     print("file  created")
 
-    writepath = r'coef.xlsx'
-    if not os.path.exists(writepath):
-        original = r'./template.xlsx'
-        # target2 = f'{target}coef.xlsx'
-        shutil.copyfile(original, writepath)
-        print("file  created")
+    # writepath = r'coef.xlsx'
+    # if not os.path.exists(writepath):
+    #     original = r'./template.xlsx'
+    #     # target2 = f'{target}coef.xlsx'
+    #     shutil.copyfile(original, writepath)
+    #     print("file  created")
 
     def multple(ta):
         ta = int(ta)
@@ -68,7 +83,7 @@ def api(request):
         namad = pd.DataFrame(pd.DataFrame(
             li2.index.tolist()).loc[:, 0]).drop_duplicates()
         namad = namad.reset_index().drop(columns=['index'])
-        namad
+
         dict1 = {}
 
         while True:
@@ -210,10 +225,71 @@ def api(request):
     start = time.time()
     dict1 = multple(ta)
     end = time.time()
-    print("Run Time: ", end - start)
     # time.sleep(15)
 
-    return JsonResponse(dict1, safe=False)
+    dictdata = Stock(data=dict1, name=get_client_ip(request))
+    dictdata.save()
+    print("Run Time1: ", end - start)
+
+    start = time.time()
+
+    def get_client_ip(request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+        print(len(data))
+
+    coeflist = []
+    powerlist = []
+    vollist = []
+    timelist = []
+    dict2 = {}
+    alldict = []
+
+    data = Stock.objects.filter(name=get_client_ip(request), created__gte=timezone.now() - timezone.timedelta(days=1))
+    if data.exists():
+
+        for i in data:
+            dict1 = i.data
+            dict1 = dict1.replace("\'", "\"")
+            dict1 = json.loads(dict1)
+            alldict.append(dict1)
+
+        dict1 = alldict[0]
+        for ids, j in enumerate(dict1.keys()):
+            coeflist = []
+            powerlist = []
+            vollist = []
+            timelist = []
+            for idj, i in enumerate(alldict):
+                powerlist.append(alldict[idj][j]['power'])
+                vollist.append(alldict[idj][j]['volume'])
+                coeflist.append(alldict[idj][j]['coef'])
+                timelist.append(alldict[idj][j]['time'])
+
+                dict2[j] = {"id": ids,
+                            "name": j,
+                            "powerlast": powerlist[-1],
+                            "volumelast": vollist[-1],
+                            "coeflast": coeflist[-1],
+                            "timelast": timelist[-1],
+                            "power": powerlist,
+                            "volume": vollist,
+                            "coef": coeflist,
+                            "time": timelist,
+                            }
+            # break
+
+    # print(dict2)
+    # print(powerlist)
+    # print(vollist)
+
+    end = time.time()
+    print("Run Time2: ", end - start)
+    return JsonResponse(dict2, safe=False)
 
 
 @csrf_exempt
@@ -223,7 +299,65 @@ def home(request):
 
 @csrf_exempt
 def api2(request):
-    return JsonResponse({"aa": "ee"}, safe=False)
+    start = time.time()
+
+    def get_client_ip(request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+        print(len(data))
+
+    coeflist = []
+    powerlist = []
+    vollist = []
+    timelist = []
+    dict2 = {}
+    alldict = []
+
+    data = Stock.objects.filter(name=get_client_ip(request), created__gte=timezone.now() - timezone.timedelta(days=1))
+    if data.exists():
+
+        for i in data:
+            dict1 = i.data
+            dict1 = dict1.replace("\'", "\"")
+            dict1 = json.loads(dict1)
+            alldict.append(dict1)
+
+        dict1 = alldict[0]
+        for ids, j in enumerate(dict1.keys()):
+            coeflist = []
+            powerlist = []
+            vollist = []
+            timelist = []
+            for idj, i in enumerate(alldict):
+                powerlist.append(alldict[idj][j]['power'])
+                vollist.append(alldict[idj][j]['volume'])
+                coeflist.append(alldict[idj][j]['coef'])
+                timelist.append(alldict[idj][j]['time'])
+
+                dict2[j] = {"id": ids,
+                            "name": j,
+                            "powerlast": powerlist[-1],
+                            "volumelast": vollist[-1],
+                            "coeflast": coeflist[-1],
+                            "timelast": timelist[-1],
+                            "power": powerlist,
+                            "volume": vollist,
+                            "coef": coeflist,
+                            "time": timelist,
+                            }
+            # break
+
+    # print(dict2)
+    # print(powerlist)
+    # print(vollist)
+
+    end = time.time()
+    print("Run Time: ", end - start)
+    return JsonResponse(dict2, safe=False)
 
 
 def home1(request):
