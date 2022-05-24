@@ -60,10 +60,11 @@
                         }
                     },
                     {title: "coef", field: "coef", align: "center"},
+                    {title: "volume", field: "volume", align: "center"},
                     {title: "time", field: "time", align: "center", width: 150},
                 ],
                 rowClick: function (e, row) { //trigger an alert message when the row is clicked
-                    console.log(row.getData().name);
+                    console.log(row.getData());
                 },
             });
 
@@ -78,9 +79,9 @@
             console.log(e);
             {#interval = interval * 2;#}
         }
-        table.setSort("coef", "desc");
+        table.setSort("power", "desc");
 
-        {#setTimeout(getDatas, 10000);#}
+        setTimeout(getDatas, 15000);
     }
 
     getDatas();

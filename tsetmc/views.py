@@ -73,16 +73,16 @@ def api(request):
 
         while True:
             try:
-                listfilewb = "coef.xlsx"
-                wbkName = listfilewb
-                print("Excel location: ", wbkName)
-                wbk = openpyxl.load_workbook(wbkName)
-                wks = wbk['Sheet1']
-                wks["A" + str(1)].value = "نماد"
-                wks["B" + str(1)].value = "Buy/Sell"
-                wks["C" + str(1)].value = "R AND L"
+                # listfilewb = "coef.xlsx"
+                # wbkName = listfilewb
+                # print("Excel location: ", wbkName)
+                # wbk = openpyxl.load_workbook(wbkName)
+                # wks = wbk['Sheet1']
+                # wks["A" + str(1)].value = "نماد"
+                # wks["B" + str(1)].value = "Buy/Sell"
+                # wks["C" + str(1)].value = "R AND L"
 
-                wks[n2a(ta + 1) + str(1)].value = time.strftime("%H:%M:%S")
+                # wks[n2a(ta + 1) + str(1)].value = time.strftime("%H:%M:%S")
                 for j in range(len(namad)):
                     try:
 
@@ -101,7 +101,7 @@ def api(request):
                         Vol_Buy_I = li.loc[namad.values[j][0]].iloc[18]
                         Vol_Sell_I = li.loc[namad.values[j][0]].iloc[20]
                         Close = li.loc[namad.values[j][0]].iloc[5]
-
+                        volume = li.loc[namad.values[j][0]].iloc[16]
                         popbuylist = []
                         popselllist = []
 
@@ -128,25 +128,6 @@ def api(request):
                                 popselllist.append(yy)
                                 # Sell_Price.pop(u)
                                 # Sell_Vol.pop(u)
-
-                        # # for aa, a in enumerate(Buy_Price):
-                        # for k in popbuylist:
-                        #     print("oldBuy_Price",Buy_Price)
-                        #     print("popbuylist",k)
-                        #     Buy_Price.pop(k)
-                        #     Buy_Vol.pop(k)
-                        #     print("okpopbuylist",k)
-                        #     print("newBuy_Price",Buy_Price)
-
-                        # # for bb, b in enumerate(Sell_Price):
-                        # for g in popselllist:
-                        #     print("oldSell_Price",Sell_Price)
-                        #     print("popselllist",g)
-
-                        #     Sell_Price.pop(g)
-                        #     Sell_Vol.pop(g)
-                        #     print("okpopbuylist",g)
-                        #     print("oldSell_Price",Sell_Price)
 
                         Buy_Price = [iii for jjj, iii in enumerate(Buy_Price) if jjj not in popbuylist]
                         Buy_Vol = [iii for jjj, iii in enumerate(Buy_Vol) if jjj not in popbuylist]
@@ -178,35 +159,37 @@ def api(request):
                             dict1[namad.values[j][0]] = {"id": j,
                                                          "name": namad.values[j][0],
                                                          "power": power,
+                                                         "volume": volume,
                                                          "coef": int(Sum_Buy) / \
                                                                  int(Sum_Sel),
                                                          "time": time.strftime("%H:%M:%S"),
                                                          }
-                            wks["A" + str(j + 2)].value = namad.values[j][0]
-                            wks["C" + str(j + 2)].value = (Vol_Sell_I - Vol_Buy_I) * Close
-                            wks[n2a(ta + 2) + str(j + 2)].value = int(Sum_Buy) / \
-                                                                  int(Sum_Sel)
+                            # wks["A" + str(j + 2)].value = namad.values[j][0]
+                            # wks["C" + str(j + 2)].value = (Vol_Sell_I - Vol_Buy_I) * Close
+                            # wks[n2a(ta + 2) + str(j + 2)].value = int(Sum_Buy) / \
+                            #                                       int(Sum_Sel)
                         except ZeroDivisionError:
                             dict1[namad.values[j][0]] = {"id": j,
                                                          "name": namad.values[j][0],
                                                          "power": power,
+                                                         "volume": volume,
                                                          "coef": -1,
                                                          "time": time.strftime("%H:%M:%S"),
                                                          }
 
-                            wks["A" + str(j + 2)].value = namad.values[j][0]
-                            wks["C" + str(j + 2)].value = (Vol_Sell_I - Vol_Buy_I) * Close
-                            wks[n2a(ta + 2) + str(j + 2)].value = -1
+                            # wks["A" + str(j + 2)].value = namad.values[j][0]
+                            # wks["C" + str(j + 2)].value = (Vol_Sell_I - Vol_Buy_I) * Close
+                            # wks[n2a(ta + 2) + str(j + 2)].value = -1
 
 
                     except Exception as e:
                         print(namad.values[j][0])
                         print(traceback.format_exc())
                         # print(e)
-                        wks["A" + str(j + 2)].value = namad.values[j][0]
-                        wks[n2a(ta + 2) + str(j + 2)].value = -2
+                        # wks["A" + str(j + 2)].value = namad.values[j][0]
+                        # wks[n2a(ta + 2) + str(j + 2)].value = -2
 
-                wbk.save(wbkName)
+                # wbk.save(wbkName)
                 print("Write Successfully")
                 break
             except Exception as e:
