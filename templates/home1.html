@@ -14,6 +14,8 @@
 </head>
 <body>
 <button onclick="getDatas()">Resfresh Data</button>
+<a id="tse">"TSETMC"</a>
+
 <a id="sortid">Last Click =</a>
 <div id="example-table"></div>
 
@@ -171,6 +173,7 @@
                     {#console.log(row.getElement());#}
                     console.log(row.getIndex());
                     document.getElementById("sortid").innerHTML = "Last Click =  Position: " + (row.getPosition(true) + 1) + "   Namad:    " + row.getData().name + "  Coef:  " + row.getData().coeflast + "  Power:  " + row.getData().powerlast + "  Volume:  " + row.getData().volumelast + "  Time:  " + row.getData().timelast;
+                    document.getElementById("tse").href = "http://facebook.com";
                     {#alert("Row " + row.getData().id + " Clicked!!!!");#}
                     ;
 
@@ -194,7 +197,7 @@
         var b = performance.now();
         console.log('It took  ' + (b - a) + '  ms.');
 
-        setTimeout(getDatas, 60000);
+        setTimeout(getDatas, 120000);
     }
 
     getDatas();

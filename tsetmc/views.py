@@ -249,7 +249,7 @@ def api(request):
     dict2 = {}
     alldict = []
 
-    volco = Stock.objects.filter(created__gte=timezone.now() - timezone.timedelta(minutes=10))
+    volco = Stock.objects.filter(created__gte=timezone.now() - timezone.timedelta(minutes=5))
     if volco.exists():
         try:
             print("volco", volco.count(), volco)
