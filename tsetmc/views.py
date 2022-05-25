@@ -350,10 +350,12 @@ def api(request):
 
 @csrf_exempt
 def url(request, id):
-    print(id)
-    DF5 = tse.__Get_TSE_WebID__(id)
-    id = DF5.loc[:, 'WEB-ID'][0]
-    return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(id))
+    print(type(id), id)
+    DF5 = tse.__Get_TSE_WebID__(str(id))
+    print(DF5, type(DF5))
+    ids = DF5.loc[:, 'WEB-ID'][0]
+    print(ids)
+    return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(ids))
 
 
 @csrf_exempt
