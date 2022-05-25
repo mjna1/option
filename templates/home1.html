@@ -163,7 +163,7 @@
                     },
                     {title: "coef", field: "coeflast", align: "center"},
                     {title: "volume", field: "volumelast", align: "center"},
-                    {#{title: "vol/vol-1", field: "nesbat", align: "center"},#}
+                    {title: "vol/vol-1", field: "nesbatvol", align: "center"},
                     {title: "time", field: "timelast", align: "center", width: 150},
                 ],
                 rowClick: function (e, row) { //trigger an alert message when the row is clicked
@@ -188,13 +188,13 @@
             console.log(e);
             {#interval = interval * 2;#}
         }
-        table.setSort("coeflast", "desc");
+        table.setSort("nesbatvol", "desc");
 
 
         var b = performance.now();
         console.log('It took  ' + (b - a) + '  ms.');
 
-        setTimeout(getDatas, 15000);
+        setTimeout(getDatas, 60000);
     }
 
     getDatas();

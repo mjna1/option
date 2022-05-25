@@ -249,9 +249,40 @@ def api(request):
     dict2 = {}
     alldict = []
 
-    data = Stock.objects.filter(name=get_client_ip(request), created__gte=timezone.now() - timezone.timedelta(days=1))
-    if data.exists():
+    volco = Stock.objects.filter(created__gte=timezone.now() - timezone.timedelta(minutes=10))
+    if volco.exists():
+        try:
+            print("volco", volco.count(), volco)
+            volcolast = volco.last()
+            volcofirst = volco.first()
+            print("volcolast", volcolast, "volcofirst", volcofirst)
 
+            volcolast = volcolast.data
+            volcolast = volcolast.replace("\'", "\"")
+            volcolast = json.loads(volcolast)
+
+            volcofirst = volcofirst.data
+            volcofirst = volcofirst.replace("\'", "\"")
+            volcofirst = json.loads(volcofirst)
+
+            for ids, j in enumerate(volcolast.keys()):
+                lastvm = volcolast[j]['volume']
+                firstvm = volcofirst[j]['volume']
+                try:
+                    # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
+                    pass
+                except ZeroDivisionError:
+                    # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", 0)
+                    pass
+
+
+        except Exception as e:
+            print(e)
+
+    data = Stock.objects.filter(name=get_client_ip(request),
+                                created__gte=timezone.now() - timezone.timedelta(minutes=5))
+    if data.exists():
+        print("len(data)", len(data))
         for i in data:
             dict1 = i.data
             dict1 = dict1.replace("\'", "\"")
@@ -264,23 +295,43 @@ def api(request):
             powerlist = []
             vollist = []
             timelist = []
-            for idj, i in enumerate(alldict):
-                powerlist.append(alldict[idj][j]['power'])
-                vollist.append(alldict[idj][j]['volume'])
-                coeflist.append(alldict[idj][j]['coef'])
-                timelist.append(alldict[idj][j]['time'])
+            try:
+                lastvm = volcolast[j]['volume']
+                firstvm = volcofirst[j]['volume']
+            except Exception as e:
+                print(e)
+            try:
+                # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
+                nasbatvol = lastvm / firstvm
+            except ZeroDivisionError:
+                # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", 0)
+                nasbatvol = 0
 
-                dict2[j] = {"id": ids,
-                            "name": j,
-                            "powerlast": powerlist[-1],
-                            "volumelast": vollist[-1],
-                            "coeflast": coeflist[-1],
-                            "timelast": timelist[-1],
-                            "power": powerlist,
-                            "volume": vollist,
-                            "coef": coeflist,
-                            "time": timelist,
-                            }
+            for idj, i in enumerate(alldict):
+                # print("idj", idj, "ids", ids, "j", j, "i", i)
+                try:
+                    powerlist.append(alldict[idj][j]['power'])
+                    vollist.append(alldict[idj][j]['volume'])
+                    coeflist.append(alldict[idj][j]['coef'])
+                    timelist.append(alldict[idj][j]['time'])
+
+                    dict2[j] = {"id": ids,
+                                "name": j,
+                                "powerlast": powerlist[-1],
+                                "volumelast": vollist[-1],
+                                "coeflast": coeflist[-1],
+                                "timelast": timelist[-1],
+                                "power": powerlist,
+                                "volume": vollist,
+                                "nesbatvol": nasbatvol,
+                                "coef": coeflist,
+                                "time": timelist,
+                                }
+                except Exception as e:
+                    pass
+                    # print(e)
+                    # print("idj", idj, "ids", ids, "j", j, "i", )
+
             # break
 
     # print(dict2)
@@ -299,6 +350,7 @@ def home(request):
 
 @csrf_exempt
 def api2(request):
+    # api222222222222222222222222222222222222222222222
     start = time.time()
 
     def get_client_ip(request):
@@ -346,6 +398,7 @@ def api2(request):
                             "timelast": timelist[-1],
                             "power": powerlist,
                             "volume": vollist,
+
                             "coef": coeflist,
                             "time": timelist,
                             }
