@@ -173,7 +173,7 @@
                     {#console.log(row.getElement());#}
                     console.log(row.getIndex());
                     document.getElementById("sortid").innerHTML = "Last Click =  Position: " + (row.getPosition(true) + 1) + "   Namad:    " + row.getData().name + "  Coef:  " + row.getData().coeflast + "  Power:  " + row.getData().powerlast + "  Volume:  " + row.getData().volumelast + "  Time:  " + row.getData().timelast;
-                    document.getElementById("tse").href = "http://facebook.com";
+                    document.getElementById("tse").href = "/url/" + row.getData().name;
                     {#alert("Row " + row.getData().id + " Clicked!!!!");#}
                     ;
 

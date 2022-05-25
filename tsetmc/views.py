@@ -14,6 +14,10 @@ from django.utils.timezone import now
 from django.utils import timezone
 import datetime
 
+import pandas as pd
+import finpy_tse as tse
+from django.shortcuts import redirect
+
 
 @csrf_exempt
 def api(request):
@@ -249,7 +253,8 @@ def api(request):
     dict2 = {}
     alldict = []
 
-    volco = Stock.objects.filter(created__gte=timezone.now() - timezone.timedelta(minutes=5))
+    volco = Stock.objects.filter(name=get_client_ip(request),
+                                 created__gte=timezone.now() - timezone.timedelta(minutes=5))
     if volco.exists():
         try:
             print("volco", volco.count(), volco)
@@ -279,8 +284,8 @@ def api(request):
         except Exception as e:
             print(e)
 
-    data = Stock.objects.filter(name=get_client_ip(request),
-                                created__gte=timezone.now() - timezone.timedelta(minutes=5))
+    data = Stock.objects.filter(
+        created__gte=timezone.now() - timezone.timedelta(minutes=5))
     if data.exists():
         print("len(data)", len(data))
         for i in data:
@@ -344,8 +349,11 @@ def api(request):
 
 
 @csrf_exempt
-def home(request):
-    return render(request, 'home.html')
+def url(request, id):
+    print(id)
+    DF5 = tse.__Get_TSE_WebID__(id)
+    id = DF5.loc[:, 'WEB-ID'][0]
+    return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(id))
 
 
 @csrf_exempt
