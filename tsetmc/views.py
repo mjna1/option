@@ -18,6 +18,7 @@ import datetime
 import pandas as pd
 import finpy_tse as tse
 from django.shortcuts import redirect
+from urllib.parse import unquote
 
 import requests
 import urllib3
@@ -409,10 +410,18 @@ def url(request, stock):
     stock = ''.join(stock.split())
     # search TSE and process:
     data = request(first_name)
-    logging.info(data)
+    # logging.info(data)
 
+    stock = unquote(stock)
     df_symbol = data[data['Symbol-Split'] == stock]
     df_name = data[data['Name-Split'] == stock]
+    # logging.info(data['Symbol-Split'])
+    # logging.info(data[data['Symbol-Split'] == "فارس"])
+    # logging.info(data['Name-Split'])
+    #
+    # logging.info(df_symbol)
+    # logging.debug(df_name)
+
     if len(df_symbol) > 0:
         print("omad inja 0")
         logging.info("omad inja 0")
