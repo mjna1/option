@@ -178,6 +178,11 @@
                     ;
 
                 },
+                rowDblClick: function (e, row) {
+                    console.log(row.getIndex(), "222222");
+                    var URL = "/url/" + row.getData().name;
+                    var win = window.open(URL, "_blank");
+                }
             });
 
             {#var size = Object.keys(data).length;#}
