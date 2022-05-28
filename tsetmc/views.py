@@ -2,6 +2,7 @@ import json
 import numbers
 import time
 import traceback
+import logging
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -253,8 +254,10 @@ def api(request):
     dict2 = {}
     alldict = []
 
-    volco = Stock.objects.filter(name=get_client_ip(request),
-                                 created__gte=timezone.now() - timezone.timedelta(minutes=5))
+    # volco = Stock.objects.filter(name=get_client_ip(request),
+    #                              created__gte=timezone.now() - timezone.timedelta(minutes=5))
+    volco = Stock.objects.filter(
+        created__gte=timezone.now() - timezone.timedelta(minutes=5))
     if volco.exists():
         try:
             print("volco", volco.count(), volco)
@@ -348,14 +351,90 @@ def api(request):
     return JsonResponse(dict2, safe=False)
 
 
+# @csrf_exempt
+# def url(request, id):
+#     print(type(id), id)
+#     DF5 = tse.__Get_TSE_WebID__(str(id))
+#     print(DF5, type(DF5))
+#     ids = DF5.loc[:, 'WEB-ID'][0]
+#     print(ids)
+#     return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(ids))
+
+
 @csrf_exempt
-def url(request, id):
-    print(type(id), id)
-    DF5 = tse.__Get_TSE_WebID__(str(id))
-    print(DF5, type(DF5))
-    ids = DF5.loc[:, 'WEB-ID'][0]
-    print(ids)
-    return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(ids))
+def url(request, stock):
+    import requests
+    import urllib3
+    urllib3.disable_warnings()
+    from persiantools import characters
+    # headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36'}
+
+    # search TSE function ------------------------------------------------------------------------------------------------------------
+    def request(name):
+        page = requests.get(f'http://www.tsetmc.com/tsev2/data/search.aspx?skey={name}', headers=headers)
+        data = []
+        for i in page.text.split(';'):
+            try:
+                i = i.split(',')
+                data.append([i[0], i[1], i[2], i[7]])
+            except:
+                pass
+        data = pd.DataFrame(data, columns=['Ticker', 'Name', 'WEB-ID', 'Active'])
+        data['Name'] = data['Name'].apply(
+            lambda x: characters.ar_to_fa(' '.join([i.strip() for i in x.split('\u200c')]).strip()))
+        data['Ticker'] = data['Ticker'].apply(lambda x: characters.ar_to_fa(''.join(x.split('\u200c')).strip()))
+        data['Name-Split'] = data['Name'].apply(lambda x: ''.join(x.split()).strip())
+        data['Symbol-Split'] = data['Ticker'].apply(lambda x: ''.join(x.split()).strip())
+        data['Active'] = pd.to_numeric(data['Active'])
+        data = data.sort_values('Ticker')
+        data = pd.DataFrame(data[['Name', 'WEB-ID', 'Name-Split', 'Symbol-Split']].values, columns=['Name', 'WEB-ID',
+                                                                                                    'Name-Split',
+                                                                                                    'Symbol-Split'],
+                            index=pd.MultiIndex.from_frame(data[['Ticker', 'Active']]))
+        return data
+
+    # ---------------------------------------------------------------------------------------------------------------------------------
+    if type(stock) != str:
+        print('Please Enetr a Valid Ticker or Name1!')
+        return False
+    # cleaning input search key
+    stock = characters.ar_to_fa(''.join(stock.split('\u200c')).strip())
+    first_name = stock.split()[0]
+    stock = ''.join(stock.split())
+    # search TSE and process:
+    data = request(first_name)
+    df_symbol = data[data['Symbol-Split'] == stock]
+    df_name = data[data['Name-Split'] == stock]
+    if len(df_symbol) > 0:
+        print("omad inja 0")
+
+        df_symbol = df_symbol.sort_index(level=1, ascending=False).drop(['Name-Split', 'Symbol-Split'], axis=1)
+        # return df_symbol
+        DF5 = df_symbol
+        print(DF5, type(DF5))
+        ids = DF5.loc[:, 'WEB-ID'][0]
+        print(ids)
+        return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(ids))
+    elif len(df_name) > 0:
+        print("omad inja 1")
+        symbol = df_name.index[0][0]
+        data = request(symbol)
+        symbol = characters.ar_to_fa(''.join(symbol.split('\u200c')).strip())
+        df_symbol = data[data.index.get_level_values('Ticker') == symbol]
+        if len(df_symbol) > 0:
+            print("omad inja 2")
+
+            df_symbol = df_symbol.sort_index(level=1, ascending=False).drop(['Name-Split', 'Symbol-Split'], axis=1)
+            # return df_symbol
+            DF5 = df_symbol
+            print(DF5, type(DF5))
+            ids = DF5.loc[:, 'WEB-ID'][0]
+            print(ids)
+            return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(ids))
+    print('Please Enetr a Valid Ticker or Name2!')
+    return False
 
 
 @csrf_exempt
@@ -424,4 +503,5 @@ def api2(request):
 
 
 def home1(request):
+    logging.error("home1 start")
     return render(request, 'home1.html')
