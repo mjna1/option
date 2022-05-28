@@ -151,19 +151,19 @@
                     {title: "id", field: "id", width: 50},
                     {title: "Name", field: "name", width: 150, sorter: "string", align: "center"},
                     {
-                        title: "power",
+                        title: "Power L(sell-buy)",
                         field: "powerlast",
                         align: "center",
                         formatter: function (cell, formatterParams) {
                             var value = cell.getValue();
                             if (value > 0) {
-                                return "<span style='color:#3FB449; font-weight:bold;'>" + value + "</span>";
+                                return "<span style='color:#3FB449; font-weight:bold;'>" + value.toLocaleString() + "</span>";
                             } else {
-                                return "<span style='color:#FF0000; font-weight:bold;'>" + value + "</span>";
+                                return "<span style='color:#FF0000; font-weight:bold;'>" + value.toLocaleString() + "</span>";
                             }
-                        }
+                        },
                     }, {
-                        title: "powerreal",
+                        title: "Power Real",
                         field: "powerreal",
                         align: "center",
                         formatter: function (cell, formatterParams) {
@@ -176,7 +176,15 @@
                         }
                     },
                     {title: "coef", field: "coeflast", align: "center"},
-                    {title: "volume", field: "volumelast", align: "center"},
+                    {
+                        title: "volume",
+                        field: "volumelast",
+                        align: "center",
+                        formatter: function (cell, formatterParams) {
+                            var value = cell.getValue();
+                            return value.toLocaleString()
+                        },
+                    },
                     {title: "vol/vol-1", field: "nesbatvol", align: "center"},
                     {title: "time", field: "timelast", align: "center", width: 150},
                 ],
