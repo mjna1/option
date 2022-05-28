@@ -127,6 +127,8 @@ def api(request):
                         low = li.loc[namad.values[j][0]].iloc[10]
                         Vol_Buy_I = li.loc[namad.values[j][0]].iloc[18]
                         Vol_Sell_I = li.loc[namad.values[j][0]].iloc[20]
+                        Vol_Buy_R = li.loc[namad.values[j][0]].iloc[17]
+                        Vol_Sell_R = li.loc[namad.values[j][0]].iloc[19]
                         Close = li.loc[namad.values[j][0]].iloc[5]
                         volume = li.loc[namad.values[j][0]].iloc[16]
                         popbuylist = []
@@ -170,6 +172,7 @@ def api(request):
                         Sum_Sel = sum(multiply_Sel)
 
                         power = (Vol_Sell_I - Vol_Buy_I) * Close
+                        powerreal = (Vol_Sell_R - Vol_Buy_R) * Close
 
                         if isfloat(str(power)):
                             power = float(str(power))
@@ -180,33 +183,37 @@ def api(request):
                             # print("power", power)
                             power = 0
 
+                        if isfloat(str(powerreal)):
+                            powerreal = float(str(powerreal))
+                        else:
+                            powerreal = 0
+
+                        if math.isnan(powerreal):
+                            # print("power", power)
+                            powerreal = 0
+
                         # print(power)
 
                         try:
                             dict1[namad.values[j][0]] = {"id": j,
                                                          "name": namad.values[j][0],
                                                          "power": power,
+                                                         "powerreal": powerreal,
                                                          "volume": volume,
                                                          "coef": int(Sum_Buy) / \
                                                                  int(Sum_Sel),
                                                          "time": time.strftime("%H:%M:%S"),
                                                          }
-                            # wks["A" + str(j + 2)].value = namad.values[j][0]
-                            # wks["C" + str(j + 2)].value = (Vol_Sell_I - Vol_Buy_I) * Close
-                            # wks[n2a(ta + 2) + str(j + 2)].value = int(Sum_Buy) / \
-                            #                                       int(Sum_Sel)
+
                         except ZeroDivisionError:
                             dict1[namad.values[j][0]] = {"id": j,
                                                          "name": namad.values[j][0],
                                                          "power": power,
+                                                         "powerreal": powerreal,
                                                          "volume": volume,
                                                          "coef": -1,
                                                          "time": time.strftime("%H:%M:%S"),
                                                          }
-
-                            # wks["A" + str(j + 2)].value = namad.values[j][0]
-                            # wks["C" + str(j + 2)].value = (Vol_Sell_I - Vol_Buy_I) * Close
-                            # wks[n2a(ta + 2) + str(j + 2)].value = -1
 
 
                     except Exception as e:
@@ -282,6 +289,7 @@ def api(request):
 
             for ids, j in enumerate(volcolast.keys()):
                 lastvm = volcolast[j]['volume']
+                powerreal = volcolast[j]['powerreal']
                 firstvm = volcofirst[j]['volume']
                 try:
                     # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
@@ -313,6 +321,8 @@ def api(request):
             try:
                 lastvm = volcolast[j]['volume']
                 firstvm = volcofirst[j]['volume']
+                powerreal = volcolast[j]['powerreal']
+
             except Exception as e:
                 print(e)
             try:
@@ -333,6 +343,7 @@ def api(request):
                     dict2[j] = {"id": ids,
                                 "name": j,
                                 "powerlast": powerlist[-1],
+                                "powerreal": powerreal,
                                 "volumelast": vollist[-1],
                                 "coeflast": coeflist[-1],
                                 "timelast": timelist[-1],
@@ -343,8 +354,8 @@ def api(request):
                                 "time": timelist,
                                 }
                 except Exception as e:
-                    pass
-                    # print(e)
+                    # pass
+                    print(e)
                     # print("idj", idj, "ids", ids, "j", j, "i", )
 
             # break

@@ -162,6 +162,18 @@
                                 return "<span style='color:#FF0000; font-weight:bold;'>" + value + "</span>";
                             }
                         }
+                    }, {
+                        title: "powerreal",
+                        field: "powerreal",
+                        align: "center",
+                        formatter: function (cell, formatterParams) {
+                            var value = cell.getValue();
+                            if (value > 0) {
+                                return "<span style='color:#3FB449; font-weight:bold;'>" + value + "</span>";
+                            } else {
+                                return "<span style='color:#FF0000; font-weight:bold;'>" + value + "</span>";
+                            }
+                        }
                     },
                     {title: "coef", field: "coeflast", align: "center"},
                     {title: "volume", field: "volumelast", align: "center"},
