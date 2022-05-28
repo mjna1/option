@@ -19,6 +19,12 @@ import pandas as pd
 import finpy_tse as tse
 from django.shortcuts import redirect
 
+import requests
+import urllib3
+
+urllib3.disable_warnings()
+from persiantools import characters
+
 
 @csrf_exempt
 def api(request):
@@ -363,10 +369,6 @@ def api(request):
 
 @csrf_exempt
 def url(request, stock):
-    import requests
-    import urllib3
-    urllib3.disable_warnings()
-    from persiantools import characters
     # headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36'}
@@ -398,6 +400,8 @@ def url(request, stock):
     # ---------------------------------------------------------------------------------------------------------------------------------
     if type(stock) != str:
         print('Please Enetr a Valid Ticker or Name1!')
+        logging.info("Please Enetr a Valid Ticker or Name1!")
+
         return False
     # cleaning input search key
     stock = characters.ar_to_fa(''.join(stock.split('\u200c')).strip())
@@ -405,35 +409,45 @@ def url(request, stock):
     stock = ''.join(stock.split())
     # search TSE and process:
     data = request(first_name)
+    logging.info(data)
+
     df_symbol = data[data['Symbol-Split'] == stock]
     df_name = data[data['Name-Split'] == stock]
     if len(df_symbol) > 0:
         print("omad inja 0")
+        logging.info("omad inja 0")
 
         df_symbol = df_symbol.sort_index(level=1, ascending=False).drop(['Name-Split', 'Symbol-Split'], axis=1)
         # return df_symbol
         DF5 = df_symbol
         print(DF5, type(DF5))
+        logging.info(DF5)
+
         ids = DF5.loc[:, 'WEB-ID'][0]
         print(ids)
         return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(ids))
     elif len(df_name) > 0:
         print("omad inja 1")
+        logging.info("omad inja 1")
+
         symbol = df_name.index[0][0]
         data = request(symbol)
         symbol = characters.ar_to_fa(''.join(symbol.split('\u200c')).strip())
         df_symbol = data[data.index.get_level_values('Ticker') == symbol]
         if len(df_symbol) > 0:
             print("omad inja 2")
+            logging.info("omad inja 2")
 
             df_symbol = df_symbol.sort_index(level=1, ascending=False).drop(['Name-Split', 'Symbol-Split'], axis=1)
             # return df_symbol
             DF5 = df_symbol
+            logging.info(DF5)
             print(DF5, type(DF5))
             ids = DF5.loc[:, 'WEB-ID'][0]
             print(ids)
             return redirect("http://www.tsetmc.com/Loader.aspx?ParTree=151311&i=" + str(ids))
     print('Please Enetr a Valid Ticker or Name2!')
+    logging.info("Please Enetr a Valid Ticker or Name2!")
     return False
 
 
@@ -503,5 +517,5 @@ def api2(request):
 
 
 def home1(request):
-    logging.error("home1 start")
+    # logging.error("home1 start")
     return render(request, 'home1.html')

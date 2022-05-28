@@ -99,8 +99,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
-import logging
-from sentry_sdk.integrations.logging import LoggingIntegration
+
+# import logging
+# from sentry_sdk.integrations.logging import LoggingIntegration
 
 # All of this is already happening by default!
 
