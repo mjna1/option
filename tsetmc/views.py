@@ -129,6 +129,8 @@ def api(request):
                         Vol_Sell_I = li.loc[namad.values[j][0]].iloc[20]
                         Vol_Buy_R = li.loc[namad.values[j][0]].iloc[17]
                         Vol_Sell_R = li.loc[namad.values[j][0]].iloc[19]
+                        No_Buy_R = li.loc[namad.values[j][0]].iloc[22]
+                        No_Sell_R = li.loc[namad.values[j][0]].iloc[24]
                         Close = li.loc[namad.values[j][0]].iloc[5]
                         volume = li.loc[namad.values[j][0]].iloc[16]
                         popbuylist = []
@@ -172,7 +174,7 @@ def api(request):
                         Sum_Sel = sum(multiply_Sel)
 
                         power = (Vol_Sell_I - Vol_Buy_I) * Close
-                        powerreal = (Vol_Sell_R - Vol_Buy_R) * Close
+                        powerreal = ((Vol_Buy_R / No_Buy_R) / (Vol_Sell_R / No_Sell_R))
 
                         if isfloat(str(power)):
                             power = float(str(power))
