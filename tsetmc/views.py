@@ -307,7 +307,7 @@ def api(request):
             print(e)
 
     data = Stock.objects.filter(
-        created__gte=timezone.now() - timezone.timedelta(minutes=5))
+        created__gte=timezone.now() - timezone.timedelta(minutes=120))
     if data.exists():
         print("len(data)", len(data))
         for i in data:
