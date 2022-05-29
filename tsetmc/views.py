@@ -195,7 +195,8 @@ def api(request):
                         if math.isnan(powerreal):
                             # print("power", power)
                             powerreal = 0
-
+                        if powerreal == math.inf:
+                            powerreal = -1
                         # print(power)
 
                         try:

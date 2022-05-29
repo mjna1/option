@@ -243,18 +243,21 @@
 
                     //create Tabulator on DOM element with id "example-table"
                     var table = new Tabulator("#example-table", {
-                        maxHeight: "100%", // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+                        {#maxHeight: 20, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)#}
+                        height: 500,
                         data: sparkData, //assign data to table
+                        renderVertical: "virtual",
                         layout: "fitColumns", //fit columns to width of table (optional)
-                        progressiveRender: true,
-                        progressiveRenderSize: 20, //sets the number of rows to render per block (default = 20)
-                        progressiveRenderMargin: 350, //distance in px before end of scroll before progressive render is triggered (default = 200)
+                        persistence: true, //enable table persistence
+                        {#progressiveRender: true,#}
+                        {#progressiveRenderSize: 20, //sets the number of rows to render per block (default = 20)#}
+                        {#progressiveRenderMargin: 350, //distance in px before end of scroll before progressive render is triggered (default = 200)#}
                         columns: [ //Define Table Columns
                             {formatter: "rownum", hozAlign: "center", width: 40},
-                            {title: "id", field: "id", width: 50},
-                            {title: "Name", field: "name", width: 150, sorter: "string", align: "center"},
+                            {title: "id", field: "id", width: 40},
+                            {title: "نام", field: "name", sorter: "string", align: "center"},
                             {
-                                title: "Power L(sell-buy)",
+                                title: "ورود پول حقوقی",
                                 field: "powerlast",
                                 align: "center",
                                 formatter: function (cell, formatterParams) {
@@ -266,7 +269,7 @@
                                     }
                                 },
                             }, {
-                                title: "Power Real",
+                                title: "قدرت خ/ف حقیقی",
                                 field: "powerreal",
                                 align: "center",
                                 formatter: function (cell, formatterParams) {
@@ -278,10 +281,10 @@
                                     }
                                 }
                             },
-                            {title: "coef", field: "coeflast", align: "center"},
-                            {title: "Coef Line Chart", field: "coef", width: 160, formatter: lineFormatter},
+                            {title: "نسبت مظنه خ/ف", field: "coeflast", align: "center"},
+                            {title: "چارت مظنه120min", field: "coef", formatter: lineFormatter},
                             {
-                                title: "volume",
+                                title: "حجم",
                                 field: "volumelast",
                                 align: "center",
                                 formatter: function (cell, formatterParams) {
@@ -289,8 +292,8 @@
                                     return value.toLocaleString()
                                 },
                             },
-                            {title: "vol/vol-1", field: "nesbatvol", align: "center"},
-                            {title: "time", field: "timelast", align: "center", width: 150},
+                            {title: "vol-now/vol-5min", field: "nesbatvol", align: "center"},
+                            {title: "time", field: "timelast", align: "center"},
                         ],
                         rowClick: function (e, row) { //trigger an alert message when the row is clicked
                             {#console.log(e, row.getData());#}
