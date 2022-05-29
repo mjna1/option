@@ -21,9 +21,9 @@
 
 <script>
     //define some sample data
-    var a = performance.now();
 
     async function getDatas() {
+        var a = performance.now();
 
         try {
             console.log('getData');
@@ -51,7 +51,7 @@
                 {#                var dateTime = date + ' ' + time;#}
                 try {
                     {#localStorage.setItem(timedate, JSON.stringify(tabledata));#}
-                    console.log('localStorage not');
+                    console.log('localStorage null');
                 } catch (e) {
                     console.log(e, "local error");
                     var keys = Object.keys(localStorage).sort();
@@ -145,7 +145,9 @@
                 maxHeight: "100%", // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
                 data: tabledata, //assign data to table
                 layout: "fitColumns", //fit columns to width of table (optional)
-
+                progressiveRender: true,
+                progressiveRenderSize: 20, //sets the number of rows to render per block (default = 20)
+                progressiveRenderMargin: 350, //distance in px before end of scroll before progressive render is triggered (default = 200)
                 columns: [ //Define Table Columns
                     {formatter: "rownum", hozAlign: "center", width: 40},
                     {title: "id", field: "id", width: 50},
@@ -221,7 +223,8 @@
 
         var b = performance.now();
         console.log('It took  ' + (b - a) + '  ms.');
-
+        b = 0;
+        a = 0;
         setTimeout(getDatas, 120000);
     }
 

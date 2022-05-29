@@ -174,8 +174,10 @@ def api(request):
                         Sum_Sel = sum(multiply_Sel)
 
                         power = (Vol_Sell_I - Vol_Buy_I) * Close
-                        powerreal = ((Vol_Buy_R / No_Buy_R) / (Vol_Sell_R / No_Sell_R))
-
+                        try:
+                            powerreal = ((Vol_Buy_R / No_Buy_R) / (Vol_Sell_R / No_Sell_R))
+                        except Exception as e:
+                            powerreal = -1
                         if isfloat(str(power)):
                             power = float(str(power))
                         else:
