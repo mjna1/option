@@ -17,7 +17,36 @@
 <a id="tse">"TSETMC"</a>
 
 <a id="sortid">Last Click =</a>
+<div>
+    <select id="filter-field">
+        <option></option>
+        <option value="name">Name</option>
+        <option value="powerlast">powerlast</option>
+        <option value="powerreal">powerreal</option>
+        <option value="coeflast">coeflast</option>
+        <option value="volumelast">volumelast</option>
+        <option value="nesbatvol">nesbatvol</option>
+        <option value="timelast">timelast</option>
+        <option value="id">id</option>
+    </select>
+
+    <select id="filter-type">
+        <option value="=">=</option>
+        <option value="<"><</option>
+        <option value="<="><=</option>
+        <option value=">">></option>
+        <option value=">=">>=</option>
+        <option value="!=">!=</option>
+        <option value="like">like</option>
+    </select>
+
+    <input id="filter-value" type="text" placeholder="value to filter">
+
+    <button id="filter-clear">Clear Filter</button>
+</div>
+
 <div id="example-table"></div>
+
 
 <script>
     //define some sample data
@@ -139,6 +168,52 @@
             //}
             {#console.log(tabl);#}
             {#var tabledata2 = tabl;#}
+
+            ///////////////////////////////////////////////
+            //Define variables for input elements
+            var fieldEl = document.getElementById("filter-field");
+            var typeEl = document.getElementById("filter-type");
+            var valueEl = document.getElementById("filter-value");
+
+            //Custom filter example
+            function customFilter(data) {
+                return data.car && data.rating < 3;
+            }
+
+            //Trigger setFilter function with correct parameters
+            function updateFilter() {
+                var filterVal = fieldEl.options[fieldEl.selectedIndex].value;
+                var typeVal = typeEl.options[typeEl.selectedIndex].value;
+
+                var filter = filterVal == "function" ? customFilter : filterVal;
+
+                if (filterVal == "function") {
+                    typeEl.disabled = true;
+                    valueEl.disabled = true;
+                } else {
+                    typeEl.disabled = false;
+                    valueEl.disabled = false;
+                }
+
+                if (filterVal) {
+                    table.setFilter(filter, typeVal, valueEl.value);
+                }
+            }
+
+            //Update filters on value change
+            document.getElementById("filter-field").addEventListener("change", updateFilter);
+            document.getElementById("filter-type").addEventListener("change", updateFilter);
+            document.getElementById("filter-value").addEventListener("keyup", updateFilter);
+
+            //Clear filters on "Clear Filters" button click
+            document.getElementById("filter-clear").addEventListener("click", function () {
+                fieldEl.value = "";
+                typeEl.value = "=";
+                valueEl.value = "";
+
+                table.clearFilter();
+            });
+
 
             //create Tabulator on DOM element with id "example-table"
             var table = new Tabulator("#example-table", {
