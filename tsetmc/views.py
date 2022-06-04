@@ -297,7 +297,7 @@ def api(request):
                 powerreal = volcolast[j]['powerreal']
                 firstvm = volcofirst[j]['volume']
                 try:
-                    # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
+                    ## print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
                     pass
                 except ZeroDivisionError:
                     # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", 0)
