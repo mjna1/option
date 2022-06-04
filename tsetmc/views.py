@@ -81,12 +81,17 @@ def api(request):
 
         while True:
             try:
+                logging.info(f'Get_MarketWatch')
                 DF5 = tse.Get_MarketWatch(save_excel=False)
+                logging.info(f'Get_MarketWatch done')
+
                 break
             except Exception as e:
                 erorta += 1
                 print(
                     e, "\n", erorta, '**internet connection error , please check your internet or turn off your vpn**')
+                logging.info(
+                    f"{e} , {erorta} , **internet connection error , please check your internet or turn off your vpn**")
                 time.sleep(10)
 
         li = pd.DataFrame(list(DF5)[0])
@@ -223,16 +228,20 @@ def api(request):
 
                     except Exception as e:
                         print(namad.values[j][0])
+                        logging.info(f"{namad.values[j][0]}")
                         print(traceback.format_exc())
+                        logging.info(f" {traceback.format_exc()}")
                         # print(e)
                         # wks["A" + str(j + 2)].value = namad.values[j][0]
                         # wks[n2a(ta + 2) + str(j + 2)].value = -2
 
                 # wbk.save(wbkName)
                 print("Write Successfully")
+                logging.info("Write Successfully")
                 break
             except Exception as e:
                 print(e)
+                logging.info(f"{e}")
                 # print(traceback.format_exc())
                 print("\n--------------------------------")
                 print(
@@ -246,6 +255,7 @@ def api(request):
     # while True:
     ta += 1
     print("Time:" + str(time.strftime("%H:%M:%S")), "  Tedad:", ta)
+    logging.info(f"Time:{time.strftime('%H:%M:%S')}  Tedad:{ta}")
     start = time.time()
     dict1 = multple(ta)
     end = time.time()
@@ -254,6 +264,7 @@ def api(request):
     dictdata = Stock(data=dict1, name=get_client_ip(request))
     dictdata.save()
     print("Run Time1: ", end - start)
+    logging.info(f"Run Time1: {end - start}")
 
     start = time.time()
 
@@ -265,6 +276,7 @@ def api(request):
             ip = request.META.get('REMOTE_ADDR')
         return ip
         print(len(data))
+        logging.info(f"{len(data)}")
 
     coeflist = []
     powerlist = []
@@ -280,9 +292,11 @@ def api(request):
     if volco.exists():
         try:
             print("volco", volco.count(), volco)
+            logging.info(f"volco {volco.count()},,{volco}")
             volcolast = volco.last()
             volcofirst = volco.first()
             print("volcolast", volcolast, "volcofirst", volcofirst)
+            logging.info(f"volcolast {volcolast},volcofirst,{volcofirst}")
 
             volcolast = volcolast.data
             volcolast = volcolast.replace("\'", "\"")
@@ -297,7 +311,7 @@ def api(request):
                 powerreal = volcolast[j]['powerreal']
                 firstvm = volcofirst[j]['volume']
                 try:
-                    ## print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
+                    # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
                     pass
                 except ZeroDivisionError:
                     # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", 0)
@@ -306,11 +320,13 @@ def api(request):
 
         except Exception as e:
             print(e)
+            logging.info(f"{e}")
 
     data = Stock.objects.filter(
         created__gte=timezone.now() - timezone.timedelta(minutes=120))
     if data.exists():
         print("len(data)", len(data))
+        logging.info(f"len(data){len(data)}")
         for i in data:
             dict1 = i.data
             dict1 = dict1.replace("\'", "\"")
@@ -330,6 +346,7 @@ def api(request):
 
             except Exception as e:
                 print(e)
+                logging.info(f"{e}")
             try:
                 # print("lastvm", lastvm, "firstvm", firstvm, "nesbat", lastvm / firstvm)
                 nasbatvol = lastvm / firstvm
@@ -361,6 +378,7 @@ def api(request):
                 except Exception as e:
                     # pass
                     print(e)
+                    logging.info(f"{e}")
                     # print("idj", idj, "ids", ids, "j", j, "i", )
 
             # break
@@ -371,6 +389,7 @@ def api(request):
 
     end = time.time()
     print("Run Time2: ", end - start)
+    logging.info(f"Run Time2: {end - start}")
     return JsonResponse(dict2, safe=False)
 
 

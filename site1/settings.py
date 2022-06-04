@@ -97,27 +97,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
+# import sentry_sdk
+# from sentry_sdk.integrations.django import DjangoIntegration
 
 # import logging
 # from sentry_sdk.integrations.logging import LoggingIntegration
 
 # All of this is already happening by default!
 
-sentry_sdk.init(
-    dsn="https://587c92f269844811bea85ae197bd9011@o1265892.ingest.sentry.io/6450218",
-    integrations=[DjangoIntegration()],
-
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0,
-
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
+# sentry_sdk.init(
+#     dsn="https://587c92f269844811bea85ae197bd9011@o1265892.ingest.sentry.io/6450218",
+#     integrations=[DjangoIntegration()],
+#
+#     # Set traces_sample_rate to 1.0 to capture 100%
+#     # of transactions for performance monitoring.
+#     # We recommend adjusting this value in production.
+#     traces_sample_rate=1.0,
+#
+#     # If you wish to associate users to errors (assuming you are using
+#     # django.contrib.auth) you may enable sending PII data.
+#     send_default_pii=True
+# )
 
 LOGGING = {
     "version": 1,
